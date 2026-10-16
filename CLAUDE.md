@@ -12,12 +12,12 @@ OPC-Nexus(package 名 `aibox-control-center`)— 本地优先的桌面 AI Agent 
 
 ## Git 工作流(必须遵守)
 
-- **每完成一个功能就提交一次**:先本地 `git commit`,再推送到 CNB 远端 `origin`(https://cnb.cool/senke/innovation/opc-nexus)
+- **每完成一个功能就提交一次**:先本地 `git commit`,再推送到 GitHub 远端 `origin`(https://github.com/QilinGu/opc-nexus,本 fork)。上游 `h4dex/opc-nexus` 未配置为 remote,不要直接推送上游
 - 提交信息风格与仓库历史一致:`feat:` / `fix:` / `docs:` / `chore:` 前缀,一行说明(中英文均可,参考 `git log`)
 - 提交前必须通过 `npm run typecheck` + `npm test`
-- 远端认证已配置在 remote URL 中(用户名 `cnb` + 令牌),**禁止**将令牌写入任何被提交的文件
-- Git 身份:`liyingjie <y@senke.com>`(已配置)
-- CNB 相关操作(API、CI、Release)使用 `.claude/skills/cnb` skill
+- 远端认证走本机 git 凭据(remote URL 中不含令牌),**禁止**将令牌写入任何被提交的文件
+- Git 身份:`Qilin Gu <gump423@gmail.com>`(已在本仓库配置)
+- GitHub 相关操作(PR、Issue、Release)使用 `gh` CLI
 
 ## 版本发布约定
 
@@ -41,7 +41,7 @@ OPC-Nexus(package 名 `aibox-control-center`)— 本地优先的桌面 AI Agent 
 
 - **没有 `lint` 脚本**,也没有独立的 `e2e` 脚本;不要在文档或 CI 中引用它们。Playwright 通过 `_electron` 驱动(`scripts/mobile-e2e.cjs`),且 `playwright` 目前是未声明的传递依赖(仅 `@playwright/mcp` 与 `playwright-core` 在 `package.json` 中),写 E2E 前需先显式声明并锁版本。
 - 依赖安装走 npmmirror 镜像(`.npmrc` 已配置)
-- CI(`.cnb.yml`,CNB 平台)在 push/PR 时**只执行** typecheck + test;构建与打包在 `.github/workflows/`。提交前 typecheck 与 test 必须通过
+- CI 是 GitHub Actions:`.github/workflows/ci.yml` 在 push/PR 到 `main` 时准备并校验 Hermes 与 Agent 运行时、跑 `hermes:smoke`,再执行 typecheck + test + build;推送 `v*` tag 触发 `release.yml` 打包。`.cnb.yml` 只属于原 CNB 平台,本 fork 不会触发。提交前 typecheck 与 test 必须通过
 - 验证顺序:`typecheck` → `test` →(涉及构建配置时)`build` →(涉及 UI 时)`dev` →桌面/手机黑盒脚本。
 - 当前基线以最新命令输出和 `docs/ACCEPTANCE-REPORT-2026-08-22.md` 为准。**全绿不等于闭环可用**，还必须验证「老板下令 → Hermes 调度 → 真实 Worker → 可打开成果」和手机项目对话边界。
 
